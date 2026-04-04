@@ -101,9 +101,10 @@ menu = st.sidebar.radio("", ["Dashboard", "Logs", "Profile"])
 try:
     model = joblib.load("models/random_forest_model.pkl")
     scaler = joblib.load("models/scaler.pkl")
-except:
-    st.error("Model not found. Run train_model.py first.")
+except Exception as e:
+    st.error(f"Actual Error: {e}")
     st.stop()
+
 
 # ===================================================
 # 📊 DASHBOARD
