@@ -1,0 +1,68 @@
+/* 🌌 Background */
+[data-testid="stAppViewContainer"] {
+    background: linear-gradient(135deg, #0f172a, #020617);
+    color: #e2e8f0;
+}
+
+/* Sidebar */
+[data-testid="stSidebar"] {
+    background: #020617;
+    border-right: 1px solid #1e293b;
+}
+
+/* Titles */
+h1, h2, h3 {
+    color: #e2e8f0;
+}
+
+/* Accent color (blue glow instead of green) */
+:root {
+    --accent: #38bdf8;
+}
+
+/* Buttons */
+.stButton button {
+    background: #020617;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.stButton button:hover {
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+}
+
+/* Metrics cards (glass effect) */
+[data-testid="metric-container"] {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #1e293b;
+    padding: 15px;
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+}
+
+/* Dataframe */
+.stDataFrame {
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+}
+
+/* Inputs */
+input {
+    background-color: #020617 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #1e293b !important;
+}
+
+/* Alerts */
+.stAlert {
+    border-radius: 10px;
+}
+
+/* Subtle hover */
+[data-testid="metric-container"]:hover {
+    border: 1px solid var(--accent);
+    transition: 0.3s;
+}
