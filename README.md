@@ -1,4 +1,4 @@
-# Ai-network-intrusion-detection
+# 🛡️ Ai-network-intrusion-detection
 Network Intrusion Detection System Using AI with CICIDS2017 Dataset. This study involves a network intrusion detection system that utilizes the random forest algorithm to classify malware attacks. It offers real-time analysis through a Streamlit application interface.
 
 ## 🚀 Features
