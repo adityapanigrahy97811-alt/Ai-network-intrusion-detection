@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CyberShield - About our AI-powered threat detection platform">
+    <title>CyberShield | About Us</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="{{ url_for('home') }}" class="nav-brand">
+            <div class="shield-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+            </div>
+            <h1 class="glitch-text">CYBERSHIELD</h1>
+        </a>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <div class="nav-user">
+                <span class="user-dot"></span>
+                {{ username }}
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('logs') }}">Logs</a></li>
+                <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
+                <li><a href="{{ url_for('about') }}" class="active">About</a></li>
+                <li><a href="{{ url_for('logout') }}" class="logout-btn">Logout</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header slide-up">
+            <h2><span class="icon">🛡️</span> About CyberShield</h2>
+            <p>AI-powered threat detection and security analysis platform</p>
+        </div>
+
+        <!-- Hero Section -->
+        <div class="card slide-up" style="text-align: center; padding: 48px 32px; margin-bottom: 30px;">
+            <div style="font-size: 4rem; margin-bottom: 16px;">🛡️</div>
+            <h2 style="font-family: 'Orbitron', sans-serif; font-size: 2rem; background: linear-gradient(135deg, #00f5ff, #ff00e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px;">
+                CYBERSHIELD v2.0
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 1.15rem; max-width: 700px; margin: 0 auto; line-height: 1.8;">
+                CyberShield is an intelligent cybersecurity dashboard that combines machine learning,
+                data science, and real-time analysis to detect, classify, and visualize URL-based threats.
+                Built for security analysts and researchers who demand precision and insight.
+            </p>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="about-grid slide-up">
+            <div class="about-card">
+                <div class="card-icon">🤖</div>
+                <h3>ML-Powered Detection</h3>
+                <p>
+                    Our Random Forest classifier analyzes 20+ URL features in real-time,
+                    including URL entropy, suspicious keyword density, TLD analysis,
+                    and structural patterns to accurately classify threats with high confidence.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <div class="card-icon">🔬</div>
+                <h3>Feature Engineering</h3>
+                <p>
+                    Advanced feature extraction pipeline analyzes URL length, domain structure,
+                    special character distribution, HTTPS usage, IP detection, subdomain count,
+                    and entropy measurements for comprehensive threat profiling.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <div class="card-icon">📊</div>
+                <h3>Interactive Analytics</h3>
+                <p>
+                    Rich visualization dashboard powered by Plotly provides real-time insights
+                    with pie charts, bar graphs, trend lines, confusion matrices,
+                    and feature importance rankings for data-driven decision making.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <div class="card-icon">🔮</div>
+                <h3>Anomaly Detection</h3>
+                <p>
+                    Isolation Forest algorithm identifies unusual URL patterns that don't fit
+                    normal distribution, flagging potential zero-day threats and novel
+                    attack vectors that traditional classifiers might miss.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <div class="card-icon">📋</div>
+                <h3>Comprehensive Logging</h3>
+                <p>
+                    Full scan history with search, filter, individual delete,
+                    bulk clear, and CSV export capabilities. Every scan is timestamped
+                    and stored with complete feature data for forensic analysis.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <div class="card-icon">🔐</div>
+                <h3>Secure Authentication</h3>
+                <p>
+                    Robust user authentication with bcrypt-hashed passwords,
+                    session management, and per-user data isolation ensures
+                    your security analysis remains private and protected.
+                </p>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="card slide-up" style="margin-top: 30px;">
+            <div class="card-header">⚙️ Technology Stack</div>
+            <div class="tech-stack-grid">
+                <div class="tech-tag">🐍 Python 3</div>
+                <div class="tech-tag">🌶️ Flask</div>
+                <div class="tech-tag">🗄️ SQLite</div>
+                <div class="tech-tag">🐼 Pandas</div>
+                <div class="tech-tag">🔢 NumPy</div>
+                <div class="tech-tag">🧠 Scikit-learn</div>
+                <div class="tech-tag">📊 Plotly</div>
+                <div class="tech-tag">🌲 Random Forest</div>
+                <div class="tech-tag">📈 Logistic Regression</div>
+                <div class="tech-tag">🔮 Isolation Forest</div>
+                <div class="tech-tag">🔒 Werkzeug</div>
+                <div class="tech-tag">💾 Joblib</div>
+            </div>
+        </div>
+
+        <!-- ML Pipeline -->
+        <div class="card slide-up" style="margin-top: 30px;">
+            <div class="card-header">🧪 ML Pipeline</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; padding: 20px 0;">
+                <div class="tech-tag" style="padding: 14px 20px; font-size: 0.9rem;">
+                    📥 Data Collection
+                </div>
+                <span style="color: var(--cyan); font-size: 1.4rem;">→</span>
+                <div class="tech-tag" style="padding: 14px 20px; font-size: 0.9rem;">
+                    🔧 Feature Engineering
+                </div>
+                <span style="color: var(--cyan); font-size: 1.4rem;">→</span>
+                <div class="tech-tag" style="padding: 14px 20px; font-size: 0.9rem;">
+                    ✂️ Train/Test Split
+                </div>
+                <span style="color: var(--cyan); font-size: 1.4rem;">→</span>
+                <div class="tech-tag" style="padding: 14px 20px; font-size: 0.9rem;">
+                    🧠 Model Training
+                </div>
+                <span style="color: var(--cyan); font-size: 1.4rem;">→</span>
+                <div class="tech-tag" style="padding: 14px 20px; font-size: 0.9rem;">
+                    📊 Evaluation
+                </div>
+                <span style="color: var(--cyan); font-size: 1.4rem;">→</span>
+                <div class="tech-tag" style="padding: 14px 20px; font-size: 0.9rem;">
+                    🎯 Prediction
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; padding: 40px 0; margin-top: 30px; border-top: 1px solid var(--border-color);">
+            <p style="color: var(--text-muted); font-family: 'Share Tech Mono', monospace; font-size: 0.85rem;">
+                CyberShield v2.0 — Built with ❤️ for Cybersecurity
+            </p>
+            <p style="color: var(--text-muted); font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; margin-top: 6px;">
+                © 2026 CyberShield Security Platform. All rights reserved.
+            </p>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('navToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}CyberShield | Login{% endblock %}
+{% block meta %}<meta name="description" content="CyberShield - Login to your threat detection dashboard">{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card fade-in">
+        <div class="auth-header">
+            <div class="logo glitch-text">CYBERSHIELD</div>
+            <p class="subtitle">Threat Detection & Security Analysis</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="auth-btn" id="loginBtn">
+                ⚡ ACCESS DASHBOARD
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="{{ url_for('signup') }}">Create one</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

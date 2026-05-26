@@ -1,0 +1,195 @@
+{% extends "layout.html" %}
+
+{% block title %}CyberShield | Threat Detection Dashboard{% endblock %}
+{% block meta %}<meta name="description" content="CyberShield - Real-time URL threat detection powered by machine learning">{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header slide-up">
+        <h2><span class="icon">🔍</span> Real-Time Threat Detection</h2>
+        <p>Enter a URL below to analyze it using our ML-powered security engine</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid slide-up" id="quickStats">
+        <div class="stat-card cyan">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value" id="totalScans">0</div>
+            <div class="stat-label">Total Scans</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="safeCount">0</div>
+            <div class="stat-label">Safe URLs</div>
+        </div>
+        <div class="stat-card yellow">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-value" id="suspiciousCount">0</div>
+            <div class="stat-label">Suspicious</div>
+        </div>
+        <div class="stat-card red">
+            <div class="stat-icon">🚨</div>
+            <div class="stat-value" id="maliciousCount">0</div>
+            <div class="stat-label">Malicious</div>
+        </div>
+        <div class="stat-card magenta">
+            <div class="stat-icon">🔮</div>
+            <div class="stat-value" id="anomalyCount">0</div>
+            <div class="stat-label">Anomalies</div>
+        </div>
+    </div>
+
+    <!-- URL Scanner -->
+    <section class="scanner-section">
+        <div class="scanner-card">
+            <div class="scanner-title">🎯 URL Threat Scanner</div>
+            <p class="scanner-subtitle">Powered by Random Forest ML Model with 20+ Feature Analysis</p>
+
+            <div class="scanner-input-group">
+                <input type="text" class="scanner-input" id="urlInput"
+                       placeholder="Enter URL to scan (e.g., https://example.com)"
+                       autocomplete="off" spellcheck="false">
+                <button class="scan-btn" id="scanBtn" onclick="scanURL()">
+                    ⚡ SCAN
+                </button>
+            </div>
+
+            <!-- Scan Results -->
+            <div class="scan-results" id="scanResults">
+                <!-- Result Header -->
+                <div class="result-header" id="resultHeader">
+                    <div class="result-badge" id="resultBadge"></div>
+                </div>
+
+                <!-- Metrics -->
+                <div class="result-metrics">
+                    <div class="metric-box">
+                        <div class="metric-label">Risk Score</div>
+                        <div class="metric-value" id="riskScore" style="color: var(--cyan)">0</div>
+                        <div class="risk-gauge">
+                            <div class="risk-gauge-fill" id="riskGauge" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">ML Confidence</div>
+                        <div class="metric-value" id="confidenceScore" style="color: var(--magenta)">0%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Malicious Probability</div>
+                        <div class="metric-value" id="malProb" style="color: var(--yellow)">0%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Anomaly Status</div>
+                        <div class="metric-value" id="anomalyStatus" style="font-size: 1.2rem">—</div>
+                    </div>
+                </div>
+
+                <!-- Feature Details -->
+                <div class="card" style="margin-top: 16px;">
+                    <div class="card-header">📋 Extracted Features</div>
+                    <div class="features-grid" id="featuresGrid"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function loadStats() {
+        try {
+            const res = await fetch('/api/analytics/overview');
+            const data = await res.json();
+            animateCounter('totalScans', data.total_scans);
+            animateCounter('safeCount', data.safe);
+            animateCounter('suspiciousCount', data.suspicious);
+            animateCounter('maliciousCount', data.malicious);
+            animateCounter('anomalyCount', data.anomalies);
+        } catch (err) { }
+    }
+
+    function animateCounter(id, target) {
+        const el = document.getElementById(id);
+        const start = parseInt(el.textContent) || 0;
+        const duration = 800;
+        const startTime = performance.now();
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(start + (target - start) * eased);
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    }
+
+    async function scanURL() {
+        const urlInput = document.getElementById('urlInput');
+        const scanBtn = document.getElementById('scanBtn');
+        const url = urlInput.value.trim();
+        if (!url) return;
+
+        scanBtn.classList.add('loading');
+        scanBtn.textContent = '';
+        try {
+            const res = await fetch('/api/scan', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+            const data = await res.json();
+            if (data.error) { alert(data.error); return; }
+            showResults(data);
+            loadStats();
+        } catch (err) { alert('Scan failed'); }
+        finally { scanBtn.classList.remove('loading'); scanBtn.textContent = '⚡ SCAN'; }
+    }
+
+    function showResults(data) {
+        const results = document.getElementById('scanResults');
+        const header = document.getElementById('resultHeader');
+        const badge = document.getElementById('resultBadge');
+        header.className = 'result-header ' + data.prediction;
+        badge.className = 'result-badge ' + data.prediction;
+        const icons = { safe: '✅', suspicious: '⚠️', malicious: '🚨' };
+        badge.innerHTML = `${icons[data.prediction]} ${data.prediction.toUpperCase()}`;
+        document.getElementById('riskScore').textContent = data.risk_score;
+        const gauge = document.getElementById('riskGauge');
+        gauge.className = 'risk-gauge-fill ' + data.prediction;
+        gauge.style.width = data.risk_score + '%';
+        document.getElementById('confidenceScore').textContent = data.confidence + '%';
+        document.getElementById('malProb').textContent = data.malicious_probability + '%';
+        const anomalyEl = document.getElementById('anomalyStatus');
+        anomalyEl.innerHTML = data.is_anomaly ? '<span class="anomaly-badge">⚡ ANOMALY</span>' : '<span style="color:var(--green)">Normal</span>';
+        
+        const featGrid = document.getElementById('featuresGrid');
+        featGrid.innerHTML = '';
+        for (const [key, value] of Object.entries(data.features)) {
+            const tag = document.createElement('div');
+            tag.className = 'feature-tag';
+            const displayVal = typeof value === 'number' ? (Number.isInteger(value) ? value : value.toFixed(3)) : value;
+            tag.innerHTML = `<span class="name">${key}</span><span class="value">${displayVal}</span>`;
+            featGrid.appendChild(tag);
+        }
+        results.classList.add('visible');
+        if (data.prediction === 'malicious') playAlertSound();
+    }
+
+    function playAlertSound() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value = 800; osc.type = 'square';
+            gain.gain.value = 0.1; osc.start();
+            setTimeout(() => { osc.frequency.value = 400; setTimeout(() => osc.stop(), 150); }, 150);
+        } catch(e) {}
+    }
+
+    document.getElementById('urlInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') scanURL(); });
+    loadStats();
+</script>
+{% endblock %}

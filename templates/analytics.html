@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}CyberShield | Analytics Dashboard{% endblock %}
+{% block extra_head %}<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="page-header slide-up">
+        <h2><span class="icon">📊</span> Analytics Dashboard</h2>
+        <p>ML model performance metrics and threat distribution</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid slide-up" id="statsGrid">
+        <div class="stat-card cyan"><div class="stat-value" id="modelAccuracy">—</div><div class="stat-label">Model Accuracy</div></div>
+        <div class="stat-card green"><div class="stat-value" id="modelPrecision">—</div><div class="stat-label">Precision</div></div>
+        <div class="stat-card red"><div class="stat-value" id="modelAUC">—</div><div class="stat-label">AUC-ROC</div></div>
+    </div>
+
+    <!-- Charts Table -->
+    <div class="charts-grid slide-up">
+        <div class="chart-card"><div class="chart-title">🥧 Distribution</div><div class="chart-container" id="pieChart"></div></div>
+        <div class="chart-card"><div class="chart-title">📊 Daily Activity</div><div class="chart-container" id="barChart"></div></div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function loadMetrics() {
+        const res = await fetch('/api/analytics/model');
+        const data = await res.json();
+        if (data.random_forest) {
+            document.getElementById('modelAccuracy').textContent = (data.random_forest.accuracy * 100).toFixed(1) + '%';
+            document.getElementById('modelPrecision').textContent = (data.random_forest.precision * 100).toFixed(1) + '%';
+            document.getElementById('modelAUC').textContent = (data.random_forest.auc_roc * 100).toFixed(1) + '%';
+        }
+    }
+    async function loadCharts() {
+        const overview = await (await fetch('/api/analytics/overview')).json();
+        Plotly.newPlot('pieChart', [{
+            values: [overview.safe, overview.suspicious, overview.malicious],
+            labels: ['Safe', 'Suspicious', 'Malicious'],
+            type: 'pie', hole: 0.4,
+            marker: { colors: ['#00ff88', '#ffcc00', '#ff3366'] }
+        }], { paper_bgcolor: 'rgba(0,0,0,0)', font: { color: '#8b95a5' }, margin: { t: 20, b: 20 } });
+        
+        const daily = await (await fetch('/api/analytics/daily')).json();
+        Plotly.newPlot('barChart', [{
+            x: daily.map(d => d.date),
+            y: daily.map(d => d.total),
+            type: 'bar', marker: { color: '#00f5ff' }
+        }], { paper_bgcolor: 'rgba(0,0,0,0)', font: { color: '#8b95a5' }, margin: { t: 20, b: 20 } });
+    }
+    loadMetrics(); loadCharts();
+</script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block title %}CyberShield | Scan Logs{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <div class="page-header slide-up">
+        <h2><span class="icon">📋</span> Scan Logs</h2>
+        <p>Complete history of all URL scans with filtering and export capabilities</p>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="logs-toolbar slide-up">
+        <input type="text" class="logs-search" id="logSearch" 
+               placeholder="🔍 Search logs by URL or prediction..." oninput="filterLogs()">
+        <div class="logs-actions">
+            <a href="/api/logs/export" class="btn btn-primary" id="exportBtn">📥 Export CSV</a>
+            <button class="btn btn-danger" onclick="confirmClearAll()">🗑️ Clear All</button>
+        </div>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="card slide-up">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>URL</th>
+                        <th>Prediction</th>
+                        <th>Risk Score</th>
+                        <th>Confidence</th>
+                        <th>Anomaly</th>
+                        <th>Timestamp</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="logsBody"></tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal-content">
+        <h3>⚠️ Confirm Action</h3>
+        <p>Are you sure you want to clear all logs?</p>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-danger" onclick="clearAllLogs()">Yes, Clear All</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let allLogs = [];
+    async function loadLogs() {
+        try {
+            const res = await fetch('/api/logs');
+            allLogs = await res.json();
+            renderLogs(allLogs);
+        } catch (err) { }
+    }
+    function renderLogs(logs) {
+        const tbody = document.getElementById('logsBody');
+        tbody.innerHTML = logs.map((log, i) => `
+            <tr class="fade-in">
+                <td>${logs.length - i}</td>
+                <td>${log.url}</td>
+                <td><span class="prediction-pill ${log.prediction}">${log.prediction}</span></td>
+                <td>${log.risk_score}</td>
+                <td>${log.confidence}%</td>
+                <td>${log.is_anomaly ? 'YES' : 'No'}</td>
+                <td>${log.scanned_at}</td>
+                <td><button class="delete-btn" onclick="deleteLog(${log.id})">🗑️</button></td>
+            </tr>
+        `).join('');
+    }
+    function filterLogs() {
+        const q = document.getElementById('logSearch').value.toLowerCase();
+        renderLogs(allLogs.filter(l => l.url.toLowerCase().includes(q) || l.prediction.includes(q)));
+    }
+    async function deleteLog(id) {
+        await fetch(`/api/logs/${id}`, { method: 'DELETE' });
+        loadLogs();
+    }
+    function confirmClearAll() { document.getElementById('confirmModal').classList.add('active'); }
+    function closeModal() { document.getElementById('confirmModal').classList.remove('active'); }
+    async function clearAllLogs() {
+        await fetch('/api/logs/clear', { method: 'DELETE' });
+        loadLogs(); closeModal();
+    }
+    loadLogs();
+</script>
+{% endblock %}
